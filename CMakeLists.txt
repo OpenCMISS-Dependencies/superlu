@@ -27,6 +27,6 @@ WRITE_BASIC_PACKAGE_VERSION_FILE(${OPENCMISS_DEPENDENCIES_CONFIGS_DIR}/superlu-$
 if (BUILD_TESTING)
     enable_testing()
     find_package(LAPACK CONFIG REQUIRED)
-    find_package(tmglib CONFIG REQUIRED)    
+    #find_package(tmglib CONFIG REQUIRED)
     add_subdirectory(TESTING)
 endif()
