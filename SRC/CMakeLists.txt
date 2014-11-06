@@ -73,10 +73,8 @@ foreach(prec s d c z)
         message(STATUS "Building precision '${prec}'")
         add_library(${prec}superlu OBJECT ${${prec}LUSRC}
             ${ALLAUX} ../FORTRAN/c_fortran_${prec}gssv.c )
-        target_compile_definitions(${prec}superlu
-            PUBLIC USE_VENDOR_BLAS) #Add_
-        target_include_directories(${prec}superlu PUBLIC
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+        target_compile_definitions(${prec}superlu PUBLIC USE_VENDOR_BLAS)
+        target_include_directories(${prec}superlu PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
         LIST(APPEND OBJS "$<TARGET_OBJECTS:${prec}superlu>")
     endif()
 endforeach()
@@ -91,18 +89,16 @@ endif()
 
 FILE(GLOB src-F c_fortran_dgssv.c)
 add_library(superlu STATIC ${OBJS} ${src-F})
-target_compile_definitions(superlu PUBLIC USE_VENDOR_BLAS) #Add_
+target_compile_definitions(superlu PUBLIC USE_VENDOR_BLAS)
 target_link_libraries(superlu PUBLIC blas)
-#if (UNIX)    
-#    target_link_libraries(superlu PUBLIC m)
-#endif()
-target_include_directories(superlu PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_include_directories(superlu PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 set_target_properties(superlu PROPERTIES
     OUTPUT_NAME superlu-${SUPERLU_VERSION})
 
 install(TARGETS superlu EXPORT superlu-config
     DESTINATION lib)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ DESTINATION include/superlu
+    FILES_MATCHING PATTERN "*.h")    
 install(EXPORT superlu-config DESTINATION lib/cmake)
 include(CMakePackageConfigHelpers)
 WRITE_BASIC_PACKAGE_VERSION_FILE(${CMAKE_CURRENT_BINARY_DIR}/superlu-config-version.cmake

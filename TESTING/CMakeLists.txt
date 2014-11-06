@@ -2,26 +2,32 @@
 file(GLOB tmg_src MATGEN/*.c)
 add_library(tmglib_local STATIC ${tmg_src})
 
-if(BUILD_PRECISION MATCHES [s])
-    file(GLOB stest_src s*.c)
-    add_executable(stest ${stest_src})
-    target_link_libraries(stest PRIVATE superlu tmglib_local)
-endif()
+macro(ADDTESTM name exec matfile args)
+    add_test(NAME ${name}
+        COMMAND ${CMAKE_COMMAND}
+            -DCMD=$<TARGET_FILE:${exec}>
+            -DARGS:STRING="${args}"
+            -DINFILE=${CMAKE_CURRENT_SOURCE_DIR}/../EXAMPLE/${matfile}
+            -P ${SUPERLU_SOURCE_DIR}/testhelper.cmake)
+endmacro()
+macro(ADDTEST name exec args)
+    add_test(NAME ${name}
+        COMMAND ${CMAKE_COMMAND}
+            -DCMD=$<TARGET_FILE:${exec}>
+            -DARGS="${args}"
+            -P ${SUPERLU_SOURCE_DIR}/testhelper.cmake)
+endmacro()
 
-if(BUILD_PRECISION MATCHES [d])
-    file(GLOB dtest_src d*.c)
-    add_executable(dtest ${dtest_src} sp_dconvert.c)
-    target_link_libraries(dtest PRIVATE superlu tmglib_local)
-endif()
-
-if(BUILD_PRECISION MATCHES [c])
-    file(GLOB ctest_src c*.c)
-    add_executable(ctest ${ctest_src} sp_cconvert.c)
-    target_link_libraries(ctest PRIVATE superlu tmglib_local)
-endif()    
-
-if(BUILD_PRECISION MATCHES [z])
-    file(GLOB ztest_src z*.c)
-    add_executable(ztest ${ztest_src} sp_zconvert.c)
-    target_link_libraries(ztest PRIVATE superlu tmglib_local)
-endif()
+foreach(prec s d c z)
+    if(BUILD_PRECISION MATCHES [${prec}])
+        file(GLOB src ${prec}*.c)
+        add_executable(${prec}test ${src} sp_ienv.c sp_${prec}convert.c)
+        target_link_libraries(${prec}test PRIVATE superlu tmglib_local)
+        ADDTEST(${prec}testM1 ${prec}test "-t LA -l 0 -n 9 -s 5")
+        ADDTEST(${prec}testM2 ${prec}test "-t LA -l 0 -n 19 -s 5")
+        ADDTEST(${prec}testM3 ${prec}test "-t LA -l 10000000 -n 9 -s 5")
+        ADDTEST(${prec}testM4 ${prec}test "-t LA -l 10000000 -n 19 -s 5")
+        ADDTESTM(${prec}testLA1 ${prec}test g20.rua "-t SP -l 0 -s 5")
+        ADDTESTM(${prec}testLA2 ${prec}test g20.rua "-t SP -l 10000000 -s 5")
+    endif()
+endforeach()
