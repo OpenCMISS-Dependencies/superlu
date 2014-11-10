@@ -1,3 +1,4 @@
+#add_definitions(-DDEBUGlevel=2)
 macro(ADDTEST name exec arg matfile)
     add_test(NAME ${name}
         COMMAND ${CMAKE_COMMAND}
@@ -17,8 +18,11 @@ macro(ADDEXEC name)
             add_executable(${pname} ${pname}.c ${pextra})
             target_link_libraries(${pname} superlu)
             
-            ADDTEST(${pname}r ${pname} -r g20.rua)
-            ADDTEST(${pname}h ${pname} -h cg20.cua)
+            if(${prec} STREQUAL s OR ${prec} STREQUAL d)
+                ADDTEST(${pname} ${pname} -h g20.rua)
+            elseif(${prec} STREQUAL c OR ${prec} STREQUAL z)
+                ADDTEST(${pname} ${pname} -h cg20.cua)
+            endif()
         endif()
     endforeach()
 endmacro()
