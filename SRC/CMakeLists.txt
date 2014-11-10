@@ -80,14 +80,15 @@ foreach(prec s d c z)
 endforeach()
 
 add_library(superlu STATIC ${OBJS})
-target_compile_definitions(superlu PUBLIC USE_VENDOR_BLAS)
+target_compile_definitions(superlu PRIVATE USE_VENDOR_BLAS)
 target_link_libraries(superlu PUBLIC blas)
 target_include_directories(superlu PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 set_target_properties(superlu PROPERTIES
     OUTPUT_NAME superlu-${SUPERLU_VERSION})
 
 install(TARGETS superlu EXPORT superlu-config
-    DESTINATION lib)
+    DESTINATION lib
+    INCLUDES DESTINATION include/superlu)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ DESTINATION include/superlu
     FILES_MATCHING PATTERN "*.h")    
 install(EXPORT superlu-config DESTINATION lib/cmake)
