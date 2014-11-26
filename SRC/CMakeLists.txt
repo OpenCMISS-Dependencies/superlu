@@ -79,7 +79,7 @@ foreach(prec s d c z)
     endif()
 endforeach()
 
-add_library(superlu STATIC ${OBJS})
+add_library(superlu ${OBJS})
 target_compile_definitions(superlu PRIVATE USE_VENDOR_BLAS)
 target_link_libraries(superlu PUBLIC blas)
 target_include_directories(superlu PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)

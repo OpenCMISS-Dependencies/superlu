@@ -1,6 +1,6 @@
 # local tmg-lib (the one from LAPACK doesnt work, as to expect :-(
 file(GLOB tmg_src MATGEN/*.c)
-add_library(tmglib_local STATIC ${tmg_src})
+add_library(tmglib_local ${tmg_src})
 
 macro(ADDTESTM name exec matfile args)
     add_test(NAME ${name}
