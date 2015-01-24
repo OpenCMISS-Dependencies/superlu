@@ -1,1 +1,1 @@
-../../SRC/slu_Cnames.h
+#include "../../SRC/slu_Cnames.h"
