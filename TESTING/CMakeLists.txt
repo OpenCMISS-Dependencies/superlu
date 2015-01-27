@@ -1,6 +1,15 @@
 # local tmg-lib (the one from LAPACK doesnt work, as to expect :-(
-file(GLOB tmg_src MATGEN/*.c)
-add_library(tmglib_local ${tmg_src})
+SET(TMG_SRC MATGEN/d_lg10.c MATGEN/d_sign.c MATGEN/r_lg10.c
+    MATGEN/r_sign.c MATGEN/lsamen.c MATGEN/pow_dd.c)
+foreach(prec s d c z)
+    if(BUILD_PRECISION MATCHES [${prec}])
+        file(GLOB tmg_src MATGEN/${prec}*.c)
+        list(APPEND TMG_SRC ${tmg_src})
+    endif()
+endforeach()
+list(REMOVE_DUPLICATES TMG_SRC)
+add_library(tmglib_local ${TMG_SRC})
+target_link_libraries(tmglib_local blas lapack superlu)
 target_compile_options(tmglib_local PRIVATE -std=c99)
 
 macro(ADDTESTM name exec matfile args)
