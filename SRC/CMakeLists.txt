@@ -66,9 +66,9 @@ SET(zLUSRC dcomplex.c zgssv.c zgssvx.c zsp_blas2.c zsp_blas3.c zgscon.c
 
 set_source_files_properties(superlu_timer.c dlamch.c slamch.c
     PROPERTIES COMPILE_FLAGS -O0)
-	  
-SET(OBJS "$<TARGET_OBJECTS:superlu_common>")
+
 add_library(superlu_common OBJECT ${ALLAUX})
+SET(OBJS "$<TARGET_OBJECTS:superlu_common>")
 foreach(prec s d c z)
     if(BUILD_PRECISION MATCHES [${prec}])
         message(STATUS "Building precision '${prec}'")
