@@ -91,7 +91,7 @@ install(TARGETS superlu EXPORT superlu-config
     INCLUDES DESTINATION include/superlu)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ DESTINATION include/superlu
     FILES_MATCHING PATTERN "*.h")    
-install(EXPORT superlu-config DESTINATION lib/cmake)
+install(EXPORT superlu-config DESTINATION ${PACKAGE_CONFIG_DIR})
 include(CMakePackageConfigHelpers)
 WRITE_BASIC_PACKAGE_VERSION_FILE(${CMAKE_CURRENT_BINARY_DIR}/superlu-config-version.cmake
     COMPATIBILITY AnyNewerVersion)
