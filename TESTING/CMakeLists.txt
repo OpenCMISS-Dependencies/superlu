@@ -9,7 +9,7 @@ foreach(prec s d c z)
 endforeach()
 list(REMOVE_DUPLICATES TMG_SRC)
 add_library(tmglib_local ${TMG_SRC})
-target_link_libraries(tmglib_local blas lapack superlu)
+target_link_libraries(tmglib_local PUBLIC blas lapack superlu)
 target_compile_options(tmglib_local PRIVATE -std=c99)
 
 macro(ADDTESTM name exec matfile args)
