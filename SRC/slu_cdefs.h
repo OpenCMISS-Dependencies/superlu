@@ -84,8 +84,6 @@ typedef int int_t; /* default */
 #include "slu_util.h"
 #include "slu_scomplex.h"
 
-
-
 typedef struct {
     int     *xsup;    /* supernode and column mapping */
     int     *supno;   

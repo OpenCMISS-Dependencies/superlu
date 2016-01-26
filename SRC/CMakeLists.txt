@@ -3,6 +3,9 @@ SET(ALLAUX superlu_timer.c util.c memory.c get_perm_c.c mmd.c
 	  heap_relax_snode.c colamd.c 
 	  ilu_relax_snode.c ilu_heap_relax_snode.c mark_relax.c 
 	  mc64ad.c qselect.c lsame.c xerbla.c)
+if (MSVC)
+    list(APPEND ALLAUX getopt.c)
+endif()	  
 	  
 SET(sLUSRC sgssv.c sgssvx.c 
 	ssp_blas2.c ssp_blas3.c sgscon.c  
@@ -68,22 +71,34 @@ set_source_files_properties(superlu_timer.c dlamch.c slamch.c
     PROPERTIES COMPILE_FLAGS -O0)
 
 add_library(superlu_common OBJECT ${ALLAUX})
-SET(OBJS "$<TARGET_OBJECTS:superlu_common>")
+target_compile_definitions(superlu_common PRIVATE USE_VENDOR_BLAS)
+if (DEFINED FORTRAN_MANGLING)
+    target_compile_definitions(superlu_common PRIVATE ${FORTRAN_MANGLING})
+endif()
+set(OBJS "$<TARGET_OBJECTS:superlu_common>")
 foreach(prec s d c z)
     if(BUILD_PRECISION MATCHES [${prec}])
         message(STATUS "Building precision '${prec}'")
         add_library(${prec}superlu OBJECT ${${prec}LUSRC} ../FORTRAN/c_fortran_${prec}gssv.c )
-        target_compile_definitions(${prec}superlu PUBLIC USE_VENDOR_BLAS)
-        target_include_directories(${prec}superlu PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-        LIST(APPEND OBJS "$<TARGET_OBJECTS:${prec}superlu>")
+        target_compile_definitions(${prec}superlu PRIVATE USE_VENDOR_BLAS)
+        if (DEFINED FORTRAN_MANGLING)
+            target_compile_definitions(${prec}superlu PRIVATE ${FORTRAN_MANGLING})
+        endif()
+        target_include_directories(${prec}superlu PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+        list(APPEND OBJS "$<TARGET_OBJECTS:${prec}superlu>")
     endif()
 endforeach()
 
 add_library(superlu ${OBJS})
-target_compile_definitions(superlu PRIVATE USE_VENDOR_BLAS)
+target_compile_definitions(superlu PUBLIC USE_VENDOR_BLAS)
+if (DEFINED FORTRAN_MANGLING)
+    target_compile_definitions(superlu PUBLIC $<BUILD_INTERFACE:${FORTRAN_MANGLING}>)
+endif()
 target_link_libraries(superlu PUBLIC blas)
-if (UNIX)
-    target_link_libraries(superlu PRIVATE m)
+if (BUILD_TESTS)
+    # Just being lazy: we include lapack to the link libraries of superlu so that
+    # all the stuff below gets lapack via linking to superlu.
+    target_link_libraries(superlu PUBLIC $<BUILD_INTERFACE:lapack>)
 endif()
 target_include_directories(superlu PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 set_target_properties(superlu PROPERTIES

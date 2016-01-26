@@ -54,6 +54,7 @@
 
 
 #if (F77_CALL_C == ADD_)
+
 /*
  * These defines set up the naming scheme required to have a fortran 77
  * routine call a C routine

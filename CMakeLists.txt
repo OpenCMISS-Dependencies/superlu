@@ -10,12 +10,14 @@ if (BUILD_SHARED_LIBS)
 endif()
 
 find_package(BLAS ${BLAS_VERSION} REQUIRED)
+if (BUILD_TESTS)
+    find_package(LAPACK ${LAPACK_VERSION} REQUIRED)
+endif()
 
 add_subdirectory(SRC)
 
 if (BUILD_TESTS)
     enable_testing()
-    find_package(LAPACK ${LAPACK_VERSION} REQUIRED)    
     add_subdirectory(TESTING)
     add_subdirectory(EXAMPLE)
     add_subdirectory(FORTRAN)

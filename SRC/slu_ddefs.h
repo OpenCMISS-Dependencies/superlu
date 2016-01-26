@@ -83,8 +83,6 @@ typedef int int_t; /* default */
 #include "supermatrix.h"
 #include "slu_util.h"
 
-
-
 typedef struct {
     int     *xsup;    /* supernode and column mapping */
     int     *supno;   
