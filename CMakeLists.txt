@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.0)
 project (SUPERLU VERSION 4.3 LANGUAGES C Fortran)
 
 option(BUILD_TESTS "${PROJECT_NAME} - Build tests" ON)
-option(PACKAGE_CONFIG_DIR "Directory for package config files (relative to CMAKE_INSTALL_PREFIX)" "lib/cmake")
+set(PACKAGE_CONFIG_DIR "lib/cmake" CACHE STRING "Directory for package config files (relative to CMAKE_INSTALL_PREFIX)")
 set(BUILD_PRECISION sdcz CACHE STRING "${PROJECT_NAME} - Build precisions (sdcz)")
 if (BUILD_SHARED_LIBS)
     # This will cause all the OBJECT targets to have -fPIC as well.
