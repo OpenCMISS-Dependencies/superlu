@@ -116,10 +116,10 @@ WRITE_BASIC_PACKAGE_VERSION_FILE(${CMAKE_CURRENT_BINARY_DIR}/superlu-config-vers
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/superlu-config-dependencies.cmake 
     "include(CMakeFindDependencyMacro)\r\n"
     	"set(${PROJECT_NAME}_IMPORT_PREFIX \${_IMPORT_PREFIX})\r\n"
-    "find_dependency(BLAS ${BLAS_VERSION})\r\n"
+    "set(BLAS_FIND_SYSTEM ${BLAS_FIND_SYSTEM})\r\nfind_dependency(BLAS ${BLAS_VERSION})\r\n"
 )
 # LAPACK only needed internally for tests thus far
-#file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/plapack-config-dependencies.cmake "find_dependency(LAPACK ${LAPACK_VERSION})\r\n")
+#file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/plapack-config-dependencies.cmake "set(LAPACK_FIND_SYSTEM ${LAPACK_FIND_SYSTEM})\r\nfind_dependency(LAPACK ${LAPACK_VERSION})\r\n")
 file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/superlu-config-dependencies.cmake "set(_IMPORT_PREFIX \${${PROJECT_NAME}_IMPORT_PREFIX})")
 install(FILES 
     ${CMAKE_CURRENT_BINARY_DIR}/superlu-config-version.cmake
